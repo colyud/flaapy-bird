@@ -71,9 +71,9 @@ function draw() {
 
     if (elapsed > fpsInterval) {
         then = now - (elapsed % fpsInterval);
-        bird.src == "http://127.0.0.1:5500/sprites/yellowbird-upflap.png" && delay % 5 == 0
+        bird.src == "https://flappybird.duyloc.dev/sprites/yellowbird-upflap.png" && delay % 5 == 0
             ? (bird.src = "./sprites/yellowbird-midflap.png")
-            : bird.src == "http://127.0.0.1:5500/sprites/yellowbird-midflap.png"
+            : bird.src == "https://flappybird.duyloc.dev/sprites/yellowbird-midflap.png"
             ? (bird.src = "./sprites/yellowbird-downflap.png")
             : (bird.src = "./sprites/yellowbird-upflap.png");
         delay++;
