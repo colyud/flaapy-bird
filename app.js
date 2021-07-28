@@ -9,7 +9,7 @@ let fg = new Image();
 let pipeNorth = new Image();
 let pipeSouth = new Image();
 
-let gap = 75;
+let gap = 100;
 let birdX = 10;
 let birdY = 150;
 let gravity = 1.5;
@@ -34,15 +34,7 @@ pipe[0] = {
 fly.src = "./audio/wing.ogg";
 scoreAudio.src = "./audio/point.ogg";
 
-// bird.onload = draw;
-// bg.onload = draw;
-// fg.onload = draw;
-// pipeNorth.onload = draw;
-pipeSouth.onload = () => {
-    startAnimating(50);
-};
-
-bird.src = "./sprites/yellowbird-up flap.png";
+bird.src = "./sprites/yellowbird-upflap.png";
 bg.src = "./sprites/background-day.png";
 fg.src = "./sprites/base.png";
 pipeNorth.src = "./sprites/pipe-green-north.png";
@@ -54,64 +46,46 @@ function moveUp() {
     fly.play();
 }
 
-function startAnimating(fps) {
-    fpsInterval = 1000 / fps;
-    then = Date.now();
-    startTime = then;
-    draw();
-}
 //draw images
 
 function draw() {
-    requestAnimationFrame(draw);
-    now = Date.now();
-    elapsed = now - then;
+    ctx.drawImage(bg, 0, 0);
 
-    // if enough time has elapsed, draw the next frame
+    for (let i = 0; i < pipe.length; i++) {
+        ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
+        ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + pipeNorth.height + gap);
+        pipe[i].x--;
 
-    if (elapsed > fpsInterval) {
-        then = now - (elapsed % fpsInterval);
-        bird.src == "https://flappybird.duyloc.dev/sprites/yellowbird-upflap.png" && delay % 5 == 0
-            ? (bird.src = "./sprites/yellowbird-midflap.png")
-            : bird.src == "https://flappybird.duyloc.dev/sprites/yellowbird-midflap.png"
-            ? (bird.src = "./sprites/yellowbird-downflap.png")
-            : (bird.src = "./sprites/yellowbird-upflap.png");
-        delay++;
-        ctx.drawImage(bg, 0, 0);
-
-        for (let i = 0; i < pipe.length; i++) {
-            ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
-            ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + pipeNorth.height + gap);
-            pipe[i].x--;
-
-            if (pipe[i].x == 125) {
-                pipe.push({
-                    x: cvs.width,
-                    y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height,
-                });
-            }
-            if (
-                (birdX + bird.width >= pipe[i].x &&
-                    birdX <= pipe[i].x + pipeNorth.width &&
-                    (birdY <= pipe[i].y + pipeNorth.height || birdY + bird.height >= pipe[i].y + pipeNorth.height + gap)) ||
-                birdY + bird.height >= cvs.height - fg.height
-            ) {
-                location.reload();
-            }
-            if (pipe[i].x == 5) {
-                score++;
-                scoreAudio.play();
-            }
+        if (pipe[i].x == 125) {
+            pipe.push({
+                x: cvs.width,
+                y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height,
+            });
         }
-
-        ctx.drawImage(fg, 0, cvs.height - fg.height);
-
-        ctx.drawImage(bird, birdX, birdY);
-
-        birdY += gravity;
-
-        ctx.fillStyle = "#000";
-        ctx.font = "20px verdana";
-        ctx.fillText("Score :" + score, 10, cvs.height - 20);
+        if (
+            (birdX + bird.width >= pipe[i].x &&
+                birdX <= pipe[i].x + pipeNorth.width &&
+                (birdY <= pipe[i].y + pipeNorth.height || birdY + bird.height >= pipe[i].y + pipeNorth.height + gap)) ||
+            birdY + bird.height >= cvs.height - fg.height
+        ) {
+            location.reload();
+        }
+        if (pipe[i].x == 5) {
+            score++;
+            scoreAudio.play();
+        }
     }
+
+    ctx.drawImage(fg, 0, cvs.height - fg.height);
+    ctx.drawImage(bird, birdX, birdY);
+
+    birdY += gravity;
+
+    ctx.fillStyle = "#000";
+    ctx.font = "20px verdana";
+    ctx.fillText("Score :" + score, 10, cvs.height - 20);
+
+    requestAnimationFrame(draw);
 }
+
+window.onload = draw;
